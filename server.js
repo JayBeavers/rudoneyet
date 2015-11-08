@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 
+require('babel-core/register');
+
 var debugService = require('debug');
 debugService.enable('server');
 

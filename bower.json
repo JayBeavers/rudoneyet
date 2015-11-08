@@ -1,0 +1,21 @@
+{
+  "name": "rudoneyet",
+  "version": "0.0.1",
+  "homepage": "https://github.com/JayBeavers/rudoneyet",
+  "authors": [
+    "Jay Beavers <jay@hikinghomeschoolers.org>"
+  ],
+  "description": "Daily task manager based on Trello",
+  "main": "public/index.html",
+  "moduleType": [
+    "node"
+  ],
+  "license": "Apache-2.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

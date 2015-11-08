@@ -1,10 +1,20 @@
+import home from './routes/home.js';
+import oauth from './routes/oauth.js';
+
 var express = require('express');
 var logger = require('morgan');
+var util = require('util');
 
 var app = express();
 app.use(logger('dev'));
 
+var session = require('cookie-session');
+app.use(session({ secret: 'yoyotrumble' }));
+
 app.use(express.static('public'));
+
+app.use('/', home);
+app.use('/', oauth);
 
 /// catch 404 and forward to error handler
 app.use( (req, res, next) => {
@@ -15,8 +25,7 @@ app.use( (req, res, next) => {
 
 /// error handlers
 app.use( (err, req, res, next) => {
-  res.writeHead(err.status || 500);
-  res.end();
+  res.send(util.inspect(err));
 });
 
 module.exports = app;
