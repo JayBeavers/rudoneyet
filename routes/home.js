@@ -1,6 +1,7 @@
+var util = require('util');
 var router = require('express').Router();
 
-var trello = require('trello-yello');
+var agent = require('superagent-promise')(require('superagent'), Promise);
 
 var key = process.env.TRELLO_KEY;
 
@@ -11,24 +12,81 @@ var home = (request, response) => {
     return;
   }
 
-  var t = trello({ key: key, token: request.session.accessToken });
+  if (!request.session.boardId) {
 
-  t.getCurrentUser().getBoards().then( (boards) => {
+    console.log('finding board id');
 
-    return Promise.all(boards.map( (board) => { return board.getName(); }));
+    agent
+      .get('https://api.trello.com/1/members/me/boards')
+      .query('fields=name&key=' + key + '&token=' + request.session.accessToken)
+      .then( (response1) => {
 
-  }).then( (boardNames) => {
+        var boards = response1.body;
+        var boardNames = boards.map( (board) => { return board.name; });
+        var index = boardNames.indexOf('Amalia\'s Test Board');
 
-    response.send('Hello Trello: ' + boardNames.join());
+        request.session.boardId = boards[index].id;
+        response.send('Hello Trello: ' + request.session.boardId);
 
-  }).catch( (error) => {
+      })
+      .catch ( (error) => {
 
-    response.status(500).send(error);
+        console.log(error);
+        throw error;
 
-  });
+      });
+
+  } else {
+
+    response.send('Hello Trello: ' + request.session.boardId);
+
+  }
+
+};
+
+var cards = (request, response) => {
+
+  if (!request.session.accessToken) {
+    response.redirect('/login');
+    return;
+  }
+
+  agent
+    .get('https://api.trello.com/1/boards/' + request.session.boardId + '/cards')
+    .query('fields=name,due,labels&key=' + key + '&token=' + request.session.accessToken)
+    .then( (response1) => {
+
+      var cards = response1.body;
+      cards = cards.filter( (card) => { return card.due !== null; });
+      var cardNames = cards.map( (card) => { return card.name; });
+
+      /*
+      agent
+        .post('https://api.trello.com/1/cards/' + cards[1].id + '/labels')
+        .query('fields=name,due,labels&key=' + key + '&token=' + request.session.accessToken)
+        .send({ name: 'Done', color: 'blue' })
+        .end()
+        .then( () => {
+          console.log('done!');
+        })
+        .catch( (error) => {
+          console.log(error);
+        });
+      */
+        
+      response.send('Hello Cards: ' + cardNames.join());
+
+    })
+    .catch ( (error) => {
+
+      console.log(error);
+      throw error;
+
+    });
 
 };
 
 router.get('/', home);
+router.get('/cards', cards);
 
 export default router;

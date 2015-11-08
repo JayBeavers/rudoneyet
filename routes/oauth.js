@@ -24,7 +24,8 @@ var login = (request, response) => {
     }
 
     request.session.requestTokenSecret = tokenSecret;
-    response.redirect(authorizeUrl + "?oauth_token=" + token + "&name=" + appName);
+
+    response.redirect(authorizeUrl + "?oauth_token=" + token + "&scope=read,write&name=" + appName);
 
   });
 
