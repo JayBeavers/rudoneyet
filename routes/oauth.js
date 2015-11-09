@@ -10,11 +10,13 @@ var requestUrl = "https://trello.com/1/OAuthGetRequestToken";
 var accessUrl = "https://trello.com/1/OAuthGetAccessToken";
 var authorizeUrl = "https://trello.com/1/OAuthAuthorizeToken";
 
-var loginCallback = 'http://localhost:3000/callback';
-
-var oauth = new OAuth(requestUrl, accessUrl, key, secret, "1.0", loginCallback, "HMAC-SHA1");
+var loginCallback;
+var oauth;
 
 var login = (request, response) => {
+
+  loginCallback = 'http://' + request.headers.host + '/callback';
+  oauth = new OAuth(requestUrl, accessUrl, key, secret, "1.0", loginCallback, "HMAC-SHA1");
 
   oauth.getOAuthRequestToken(function (error, token, tokenSecret, results) {
 
