@@ -1,35 +1,35 @@
 <!DOCTYPE html>
 <html>
   {{> head}}
-  <body>
+  <body unresolved>
 
-    <h1>{{board.name}}</h1>
+    <div id="cards" class="layout vertical">
 
-    <hr>
+      <h1>{{board.name}}</h1>
 
-    {{#each cards}}
-      <div>
+      {{#each cards}}
+        <paper-card {{#if done}}class="done"{{/if}}>
 
-        <div {{#if done}} style="color: grey"{{/if}}><a href={{url}}>{{name}}</a></div>
+          <div class='card-content'>
+            <div {{#if done}} style="color: grey"{{/if}}><a href={{url}}>{{name}}</a></div>
+            {{#each description}}
+            <div>{{this}}</div>
+            {{/each}}
+          </div>
 
-        {{#unless done}}
-        {{#if activityUrl}}
-        <div><a href={{activityUrl}}>{{activityUrl}}</a></div>
-        {{/if}}
-        {{/unless}}
+          {{#unless done}}
+          <div class='card-actions'>
+            {{#if activityUrl}}
+            <a href={{activityUrl}}><paper-button class="green ripple">Activity</paper-button></a>
+            {{/if}}
+            <a href="/cardDone/{{id}}"><paper-button class="blue ripple">Done</paper-button></a>
+          </div>
+          {{/unless}}
 
-        {{#each description}}
-        <div>{{this}}</div>
-        {{/each}}
+        </paper-card>
+      {{/each}}
 
-        {{#unless done}}
-        <div><a href="/cardDone/{{id}}">Done!</a></div>
-        {{/unless}}
-
-      </div>
-
-      <hr>
-    {{/each}}
+    </div>
 
   </body>
 </html>
