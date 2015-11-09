@@ -14,18 +14,19 @@
     {{#each cards}}
       <div>
 
-        <div {{#if done}} style="color: grey"{{/if}}>{{name}}</div>
-
-        {{#if desc}}
-        <div>{{desc}}</div>
-        {{/if}}
+        <div {{#if done}} style="color: grey"{{/if}}><a href={{url}}>{{name}}</a></div>
 
         {{#unless done}}
-
         {{#if activityUrl}}
         <div><a href={{activityUrl}}>{{activityUrl}}</a></div>
         {{/if}}
+        {{/unless}}
 
+        {{#each description}}
+        <div>{{this}}</div>
+        {{/each}}
+
+        {{#unless done}}
         <div><a href="/cardDone/{{id}}">Done!</a></div>
         {{/unless}}
 

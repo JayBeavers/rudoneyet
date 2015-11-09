@@ -1,4 +1,6 @@
 var util = require('util');
+var moment = require('moment');
+var _ = require('underscore');
 var validUrl = require('valid-url');
 var router = require('express').Router();
 
@@ -50,11 +52,23 @@ var home = (request, response) => {
 
     var cardsPromise = agent
       .get('https://api.trello.com/1/boards/' + request.session.boardId + '/cards')
-      .query('fields=name,due,labels,desc&key=' + key + '&token=' + request.session.accessToken)
+      .query('fields=name,due,labels,desc,url&key=' + key + '&token=' + request.session.accessToken)
       .then( (response1) => {
 
         var cards = response1.body;
-        return cards.filter( (card) => { return card.due !== null; });
+
+        // Filter out cards which do not have the matching due date for today
+        cards = cards.filter( (card) => {
+
+          if (!card.due) {
+            return false;
+          }
+
+          return moment(card.due).isSame(moment(), 'day');
+
+        });
+
+        return cards;
 
       });
 
@@ -88,12 +102,17 @@ var home = (request, response) => {
           // Translate the card description into an activityUrl if all the description contains is a url
           cards = cards.map( (card) => {
 
-            if (validUrl.isUri(card.desc)) {
+            var lines = card.desc.split('\n');
 
-              card.activityUrl = card.desc;
-              delete card.desc;
+            // Find the first valid url in the description and turn that into the activity url
+            card.activityUrl = _.find(lines, (line) => { return validUrl.isUri(line); });
 
-            }
+            // Remove the activity url from the remaining description lines
+            lines = _.without(lines, card.activityUrl);
+
+            // Substitute the array of separated lines for the original description string
+            card.description = lines;
+            delete card.desc;
 
             return card;
 
@@ -107,7 +126,8 @@ var home = (request, response) => {
         },
         (error) => {
 
-          console.log(error); throw error;
+          console.log(error);
+          throw error;
 
         }
       );
