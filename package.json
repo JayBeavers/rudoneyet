@@ -27,6 +27,7 @@
     "morgan": "^1.6.1",
     "oauth": "^0.9.14",
     "superagent": "^1.4.0",
-    "superagent-promise": "^1.0.3"
+    "superagent-promise": "^1.0.3",
+    "valid-url": "^1.0.9"
   }
 }

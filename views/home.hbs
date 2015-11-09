@@ -2,17 +2,37 @@
 <html>
   {{> head}}
   <body>
+
     <h1>Are You Done Yet?</h1>
+
     <p>
       {{board.name}}
     </p>
 
+    <hr>
+
     {{#each cards}}
-      <p>
-        <span {{#if this.done}} style="color: grey"{{/if}}>
-          {{this.name}}
-        </span>
-      </p>
+      <div>
+
+        <div {{#if done}} style="color: grey"{{/if}}>{{name}}</div>
+
+        {{#if desc}}
+        <div>{{desc}}</div>
+        {{/if}}
+
+        {{#unless done}}
+
+        {{#if activityUrl}}
+        <div><a href={{activityUrl}}>Activity</a></div>
+        {{/if}}
+
+        <div><a href>Done!</a></div>
+        {{/unless}}
+
+      </div>
+
+      <hr>
     {{/each}}
+
   </body>
 </html>

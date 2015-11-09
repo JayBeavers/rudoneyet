@@ -1,4 +1,5 @@
 var util = require('util');
+var validUrl = require('valid-url');
 var router = require('express').Router();
 
 var agent = require('superagent-promise')(require('superagent'), Promise);
@@ -49,7 +50,7 @@ var home = (request, response) => {
 
     var cardsPromise = agent
       .get('https://api.trello.com/1/boards/' + request.session.boardId + '/cards')
-      .query('fields=name,due,labels&key=' + key + '&token=' + request.session.accessToken)
+      .query('fields=name,due,labels,desc&key=' + key + '&token=' + request.session.accessToken)
       .then( (response1) => {
 
         var cards = response1.body;
@@ -84,6 +85,21 @@ var home = (request, response) => {
 
           });
 
+          // Translate the card description into an activityUrl if all the description contains is a url
+          cards = cards.map( (card) => {
+
+            if (validUrl.isUri(card.desc)) {
+
+              card.activityUrl = card.desc;
+              delete card.desc;
+
+            }
+
+            return card;
+
+          });
+
+          // Sort cards, putting the done cards at the end of the list
           cards = cards.sort( (card) => { if (card.done) return 1; else return 0; });
 
           response.render('home.hbs', { board: board, cards: cards });
