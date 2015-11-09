@@ -26,7 +26,7 @@ var home = (request, response) => {
         var index = boardNames.indexOf('Amalia\'s Test Board');
 
         request.session.boardId = boards[index].id;
-        response.send('Hello Trello: ' + request.session.boardId);
+        response.render('home.hbs', boards[index]);
 
       })
       .catch ( (error) => {
@@ -38,7 +38,21 @@ var home = (request, response) => {
 
   } else {
 
-    response.send('Hello Trello: ' + request.session.boardId);
+    agent
+      .get('https://api.trello.com/1/boards/' + request.session.boardId)
+      .query('fields=name&key=' + key + '&token=' + request.session.accessToken)
+      .then( (response1) => {
+
+        var board = response1.body;
+        response.render('home.hbs', board);
+
+      })
+      .catch ( (error) => {
+
+        console.log(error);
+        throw error;
+
+      });
 
   }
 
@@ -73,7 +87,7 @@ var cards = (request, response) => {
           console.log(error);
         });
       */
-        
+
       response.send('Hello Cards: ' + cardNames.join());
 
     })

@@ -16,6 +16,16 @@ app.use(session({ secret: 'yoyotrumble', maxAge: maxAge }));
 
 app.use(express.static('public'));
 
+var hbs = require('hbs');
+var hbsutils = require('hbs-utils')(hbs);
+hbsutils.registerWatchedPartials(__dirname + '/views/partials');
+var helpers = require('hbs-helpers');
+for (var helper in helpers) {
+  hbs.registerHelper(helper, helpers[helper]);
+}
+
+app.set('view engine', 'hbs');
+
 app.use('/', home);
 app.use('/', oauth);
 
