@@ -17,14 +17,14 @@
             {{/each}}
           </div>
 
-          {{#unless done}}
           <div class='card-actions'>
+            <a href="/cardDone/{{id}}"><paper-checkbox class="blue" {{#if done}}checked{{/if}}>Done</paper-checkbox></a>
+            {{#unless done}}
             {{#if activityUrl}}
             <a href={{activityUrl}} target="_blank"><paper-button class="green ripple">Activity</paper-button></a>
             {{/if}}
-            <a href="/cardDone/{{id}}"><paper-button class="blue ripple">Done</paper-button></a>
+            {{/unless}}
           </div>
-          {{/unless}}
 
         </paper-card>
       {{/each}}

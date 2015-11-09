@@ -13,6 +13,7 @@
   <link rel="import" href="components/paper-styles/color.html">
   <link rel="import" href="components/paper-card/paper-card.html">
   <link rel="import" href="components/paper-button/paper-button.html">
+    <link rel="import" href="components/paper-checkbox/paper-checkbox.html">
   <link rel="import" href="components/paper-icon-button/paper-icon-button.html">
   <link rel="import" href="components/iron-icons/iron-icons.html">
   <link rel="import" href="components/iron-flex-layout/iron-flex-layout.html">
@@ -85,6 +86,36 @@
     paper-button.ripple {
       --paper-button-ink-color: var(--paper-pink-a200);
     }
+
+    paper-checkbox {
+        display: inline;
+        margin-bottom: 40px;
+      }
+      paper-checkbox.blue {
+        --paper-checkbox-checked-color: var(--paper-light-blue-500);
+        --paper-checkbox-checked-ink-color: var(--paper-light-blue-500);
+        --paper-checkbox-unchecked-color: var(--paper-light-blue-900);
+        --paper-checkbox-unchecked-ink-color: var(--paper-light-blue-900);
+      }
+      paper-checkbox.red {
+        --paper-checkbox-checked-color: var(--paper-red-500);
+        --paper-checkbox-checked-ink-color: var(--paper-red-500);
+        --paper-checkbox-unchecked-color: var(--paper-red-900);
+        --paper-checkbox-unchecked-ink-color: var(--paper-red-900);
+      }
+      paper-checkbox.green {
+        --paper-checkbox-checked-color: var(--paper-green-500);
+        --paper-checkbox-checked-ink-color: var(--paper-green-500);
+        --paper-checkbox-unchecked-color: var(--paper-green-900);
+        --paper-checkbox-unchecked-ink-color: var(--paper-green-900);
+      }
+      paper-checkbox.orange {
+        --paper-checkbox-checked-color: var(--paper-orange-500);
+        --paper-checkbox-checked-ink-color: var(--paper-orange-500);
+        --paper-checkbox-unchecked-color: var(--paper-orange-900);
+        --paper-checkbox-unchecked-ink-color: var(--paper-orange-900);
+      }
+
   </style>
 
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
