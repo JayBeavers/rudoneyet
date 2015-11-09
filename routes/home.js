@@ -59,7 +59,7 @@ var home = (request, response) => {
       });
 
     Promise
-      .all([ boardPromise, cardsPromise])
+      .all([ boardPromise, cardsPromise ])
       .then(
         (values) => {
 
@@ -130,20 +130,6 @@ var cards = (request, response) => {
       cards = cards.filter( (card) => { return card.due !== null; });
       var cardNames = cards.map( (card) => { return card.name; });
 
-      /*
-      agent
-        .post('https://api.trello.com/1/cards/' + cards[1].id + '/labels')
-        .query('fields=name,due,labels&key=' + key + '&token=' + request.session.accessToken)
-        .send({ name: 'Done', color: 'blue' })
-        .end()
-        .then( () => {
-          console.log('done!');
-        })
-        .catch( (error) => {
-          console.log(error);
-        });
-      */
-
       response.send('Hello Cards: ' + cardNames.join());
 
     })
@@ -156,7 +142,41 @@ var cards = (request, response) => {
 
 };
 
+var cardDone = (request, response) => {
+
+  var cardId = request.params.id;
+
+  var labelPromise = agent
+    .post('https://api.trello.com/1/cards/' + cardId + '/labels')
+    .query('key=' + key + '&token=' + request.session.accessToken)
+    .send({ name: 'Done', color: 'black' })
+    .end();
+
+  var bottomPromise = agent
+    .put('https://api.trello.com/1/cards/' + cardId + '/pos')
+    .query('key=' + key + '&token=' + request.session.accessToken)
+    .send({ value: 'bottom' })
+    .end();
+
+  Promise
+    .all([ labelPromise, bottomPromise ])
+    .then( () => {
+
+      console.log('Done');
+      response.redirect('/');
+
+    })
+    .catch( (error) => {
+
+      console.log(error);
+      throw error;
+
+    });
+
+};
+
 router.get('/', home);
 router.get('/cards', cards);
+router.get('/cardDone/:id', cardDone);
 
 export default router;

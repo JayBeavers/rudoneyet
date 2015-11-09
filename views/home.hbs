@@ -23,10 +23,10 @@
         {{#unless done}}
 
         {{#if activityUrl}}
-        <div><a href={{activityUrl}}>Activity</a></div>
+        <div><a href={{activityUrl}}>{{activityUrl}}</a></div>
         {{/if}}
 
-        <div><a href>Done!</a></div>
+        <div><a href="/cardDone/{{id}}">Done!</a></div>
         {{/unless}}
 
       </div>
