@@ -17,7 +17,7 @@ var home = (request, response) => {
 
   if (!request.session.boardId) {
 
-    console.log('finding board id');
+    console.log('choosing board');
 
     agent
       .get('https://api.trello.com/1/members/me/boards')
@@ -25,11 +25,7 @@ var home = (request, response) => {
       .then( (response1) => {
 
         var boards = response1.body;
-        var boardNames = boards.map( (board) => { return board.name; });
-        var index = boardNames.indexOf('Amalia\'s Test Board');
-
-        request.session.boardId = boards[index].id;
-        response.render('home.hbs', boards[index]);
+        response.render('chooseBoard.hbs', { boards: boards });
 
       })
       .catch ( (error) => {
@@ -40,6 +36,8 @@ var home = (request, response) => {
       });
 
   } else {
+
+    console.log('loading home');
 
     var boardPromise = agent
       .get('https://api.trello.com/1/boards/' + request.session.boardId)
@@ -126,9 +124,16 @@ var home = (request, response) => {
         },
         (error) => {
 
-          console.log(error);
-          throw error;
+          if (error.message == 'Unauthorized') {
 
+            response.redirect('/login');
+
+          } else {
+
+            console.log(error.message);
+            throw error;
+
+          }
         }
       );
   }
@@ -195,8 +200,18 @@ var cardDone = (request, response) => {
 
 };
 
+var chooseBoard = (request, response) => {
+
+  var boardId = request.params.id;
+  request.session.boardId = boardId;
+
+  response.redirect('/');
+
+};
+
 router.get('/', home);
 router.get('/cards', cards);
 router.get('/cardDone/:id', cardDone);
+router.get('/chooseBoard/:id', chooseBoard);
 
 export default router;

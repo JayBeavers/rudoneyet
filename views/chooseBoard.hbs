@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  {{> head}}
+  <body unresolved>
+
+    <div id="cards" class="layout vertical">
+
+      <h1>Choose a board</h1>
+
+      {{#each boards}}
+        <paper-card>
+
+          <div class='card-content'>
+            {{name}}
+          </div>
+
+          <div class='card-actions'>
+            <a href="/chooseBoard/{{id}}"><paper-button class="green ripple">select</paper-button></a>
+          </div>
+
+        </paper-card>
+      {{/each}}
+
+    </div>
+
+  </body>
+</html>
