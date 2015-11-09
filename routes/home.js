@@ -38,24 +38,64 @@ var home = (request, response) => {
 
   } else {
 
-    agent
+    var boardPromise = agent
       .get('https://api.trello.com/1/boards/' + request.session.boardId)
       .query('fields=name&key=' + key + '&token=' + request.session.accessToken)
       .then( (response1) => {
 
-        var board = response1.body;
-        response.render('home.hbs', board);
-
-      })
-      .catch ( (error) => {
-
-        console.log(error);
-        throw error;
+        return response1.body;
 
       });
 
-  }
+    var cardsPromise = agent
+      .get('https://api.trello.com/1/boards/' + request.session.boardId + '/cards')
+      .query('fields=name,due,labels&key=' + key + '&token=' + request.session.accessToken)
+      .then( (response1) => {
 
+        var cards = response1.body;
+        return cards.filter( (card) => { return card.due !== null; });
+
+      });
+
+    Promise
+      .all([ boardPromise, cardsPromise])
+      .then(
+        (values) => {
+
+          var board = values[0];
+          var cards = values[1];
+
+          // Add a root 'done' property to the card, based on whether the card has a label of 'Done'
+          cards = cards.map( (card) => {
+
+            if (card.labels.some( (label) => {
+              return label.name === 'Done';
+            })) {
+
+              card.done = true;
+
+            } else {
+
+              card.done = false;
+
+            }
+
+            return card;
+
+          });
+
+          cards = cards.sort( (card) => { if (card.done) return 1; else return 0; });
+
+          response.render('home.hbs', { board: board, cards: cards });
+
+        },
+        (error) => {
+
+          console.log(error); throw error;
+
+        }
+      );
+  }
 };
 
 var cards = (request, response) => {

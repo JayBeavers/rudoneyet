@@ -4,7 +4,15 @@
   <body>
     <h1>Are You Done Yet?</h1>
     <p>
-      {{name}}
+      {{board.name}}
     </p>
+
+    {{#each cards}}
+      <p>
+        <span {{#if this.done}} style="color: grey"{{/if}}>
+          {{this.name}}
+        </span>
+      </p>
+    {{/each}}
   </body>
 </html>
