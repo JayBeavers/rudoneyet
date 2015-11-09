@@ -17,23 +17,7 @@ var home = (request, response) => {
 
   if (!request.session.boardId) {
 
-    console.log('choosing board');
-
-    agent
-      .get('https://api.trello.com/1/members/me/boards')
-      .query('fields=name&key=' + key + '&token=' + request.session.accessToken)
-      .then( (response1) => {
-
-        var boards = response1.body;
-        response.render('chooseBoard.hbs', { boards: boards });
-
-      })
-      .catch ( (error) => {
-
-        console.log(error);
-        throw error;
-
-      });
+    choose(request, response);
 
   } else {
 
@@ -209,9 +193,32 @@ var chooseBoard = (request, response) => {
 
 };
 
+var choose = (request, response) => {
+
+  console.log('choosing board');
+
+  agent
+    .get('https://api.trello.com/1/members/me/boards')
+    .query('fields=name&key=' + key + '&token=' + request.session.accessToken)
+    .then( (response1) => {
+
+      var boards = response1.body;
+      response.render('chooseBoard.hbs', { boards: boards });
+
+    })
+    .catch ( (error) => {
+
+      console.log(error);
+      throw error;
+
+    });
+
+};
+
 router.get('/', home);
 router.get('/cards', cards);
 router.get('/cardDone/:id', cardDone);
+router.get('/choose', choose);
 router.get('/chooseBoard/:id', chooseBoard);
 
 export default router;
