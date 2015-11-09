@@ -8,8 +8,9 @@ var util = require('util');
 var app = express();
 app.use(logger('dev'));
 
+// Set the session cookies to expire in three years
 var hour = 3600000;
-var maxAge = 21 * 24 * hour; // Set the cookie to expire in three weeks
+var maxAge = 3 * 365 * 24 * hour;
 
 var session = require('cookie-session');
 app.use(session({ secret: 'yoyotrumble', maxAge: maxAge }));
