@@ -11,7 +11,7 @@
         <paper-card {{#if done}}class="done"{{/if}}>
 
           <div class='card-content'>
-            <div {{#if done}} style="color: grey"{{/if}}><a href={{url}}>{{name}}</a></div>
+            <div {{#if done}} style="color: grey"{{/if}}><a href={{url}} target="_blank">{{name}}</a></div>
             {{#each description}}
             <div>{{this}}</div>
             {{/each}}
@@ -30,7 +30,13 @@
       {{/each}}
 
       <p></p>
-      <a href="/choose"><paper-button class="red ripple">Change board</paper-button></a>
+
+      <div>
+        {{today}}
+        <a href="/day/{{previousDay}}"><paper-button class="green ripple">Previous Day</paper-button></a>
+        <a href="/day/{{nextDay}}"><paper-button class="green ripple">Next Day</paper-button></a>
+        <a href="/choose"><paper-button class="red ripple">Change board</paper-button></a>
+      </div>
 
     </div>
 

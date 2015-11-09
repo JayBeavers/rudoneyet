@@ -23,104 +23,139 @@ var home = (request, response) => {
 
     console.log('loading home');
 
-    var boardPromise = agent
-      .get('https://api.trello.com/1/boards/' + request.session.boardId)
-      .query('fields=name&key=' + key + '&token=' + request.session.accessToken)
-      .then( (response1) => {
+    loadHome(request, response, moment());
 
-        return response1.body;
+  }
+};
+
+var homeWithDay = (request, response) => {
+
+  var day = request.params.day;
+
+  if (!request.session.accessToken) {
+    response.redirect('/login');
+    return;
+  }
+
+  if (!request.session.boardId) {
+
+    choose(request, response);
+
+  } else {
+
+    console.log('loading home');
+
+    loadHome(request, response, moment(day));
+
+  }
+};
+
+var loadHome = (request, response, day) => {
+
+  var boardPromise = agent
+    .get('https://api.trello.com/1/boards/' + request.session.boardId)
+    .query('fields=name&key=' + key + '&token=' + request.session.accessToken)
+    .then( (response1) => {
+
+      return response1.body;
+
+    });
+
+  var cardsPromise = agent
+    .get('https://api.trello.com/1/boards/' + request.session.boardId + '/cards')
+    .query('fields=name,due,labels,desc,url&key=' + key + '&token=' + request.session.accessToken)
+    .then( (response1) => {
+
+      var cards = response1.body;
+
+      // Filter out cards which do not have the matching due date for today
+      cards = cards.filter( (card) => {
+
+        if (!card.due) {
+          return false;
+        }
+
+        return moment(card.due).isSame(day, 'day');
 
       });
 
-    var cardsPromise = agent
-      .get('https://api.trello.com/1/boards/' + request.session.boardId + '/cards')
-      .query('fields=name,due,labels,desc,url&key=' + key + '&token=' + request.session.accessToken)
-      .then( (response1) => {
+      return cards;
 
-        var cards = response1.body;
+    });
 
-        // Filter out cards which do not have the matching due date for today
-        cards = cards.filter( (card) => {
+  Promise
+    .all([ boardPromise, cardsPromise ])
+    .then(
+      (values) => {
 
-          if (!card.due) {
-            return false;
-          }
+        var board = values[0];
+        var cards = values[1];
 
-          return moment(card.due).isSame(moment(), 'day');
+        // Add a root 'done' property to the card, based on whether the card has a label of 'Done'
+        cards = cards.map( (card) => {
 
-        });
+          if (card.labels.some( (label) => {
+            return label.name === 'Done';
+          })) {
 
-        return cards;
-
-      });
-
-    Promise
-      .all([ boardPromise, cardsPromise ])
-      .then(
-        (values) => {
-
-          var board = values[0];
-          var cards = values[1];
-
-          // Add a root 'done' property to the card, based on whether the card has a label of 'Done'
-          cards = cards.map( (card) => {
-
-            if (card.labels.some( (label) => {
-              return label.name === 'Done';
-            })) {
-
-              card.done = true;
-
-            } else {
-
-              card.done = false;
-
-            }
-
-            return card;
-
-          });
-
-          // Translate the card description into an activityUrl if all the description contains is a url
-          cards = cards.map( (card) => {
-
-            var lines = card.desc.split('\n');
-
-            // Find the first valid url in the description and turn that into the activity url
-            card.activityUrl = _.find(lines, (line) => { return validUrl.isUri(line); });
-
-            // Remove the activity url from the remaining description lines
-            lines = _.without(lines, card.activityUrl);
-
-            // Substitute the array of separated lines for the original description string
-            card.description = lines;
-            delete card.desc;
-
-            return card;
-
-          });
-
-          // Sort cards, putting the done cards at the end of the list
-          cards = cards.sort( (card) => { if (card.done) return 1; else return 0; });
-
-          response.render('home.hbs', { board: board, cards: cards });
-
-        },
-        (error) => {
-
-          if (error.message == 'Unauthorized') {
-
-            response.redirect('/login');
+            card.done = true;
 
           } else {
 
-            console.log(error.message);
-            throw error;
+            card.done = false;
 
           }
+
+          return card;
+
+        });
+
+        // Translate the card description into an activityUrl if all the description contains is a url
+        cards = cards.map( (card) => {
+
+          var lines = card.desc.split('\n');
+
+          // Find the first valid url in the description and turn that into the activity url
+          card.activityUrl = _.find(lines, (line) => { return validUrl.isUri(line); });
+
+          // Remove the activity url from the remaining description lines
+          lines = _.without(lines, card.activityUrl);
+
+          // Substitute the array of separated lines for the original description string
+          card.description = lines;
+          delete card.desc;
+
+          return card;
+
+        });
+
+        // Sort cards, putting the done cards at the end of the list
+        cards = cards.sort( (card) => { if (card.done) return 1; else return 0; });
+
+        response.render('home.hbs', {
+          board: board,
+          cards: cards,
+          today: day.format('YYYY-MM-DD'),
+          previousDay: day.subtract(1, 'days').format('YYYY-MM-DD'),
+          nextDay: day.add(2, 'days').format('YYYY-MM-DD')
+        });
+
+      },
+      (error) => {
+
+        if (error.message == 'Unauthorized') {
+
+          response.redirect('/login');
+
+        } else {
+
+          console.log(error.message);
+          throw error;
+
         }
-      );
-  }
+      }
+    );
+
 };
 
 var cards = (request, response) => {
@@ -220,5 +255,6 @@ router.get('/cards', cards);
 router.get('/cardDone/:id', cardDone);
 router.get('/choose', choose);
 router.get('/chooseBoard/:id', chooseBoard);
+router.get('/day/:day', homeWithDay);
 
 export default router;
