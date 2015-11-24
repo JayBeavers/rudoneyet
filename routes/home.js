@@ -63,7 +63,7 @@ var loadHome = (request, response, day) => {
 
   var cardsPromise = agent
     .get('https://api.trello.com/1/boards/' + request.session.boardId + '/cards')
-    .query('fields=name,due,labels,desc,url&key=' + key + '&token=' + request.session.accessToken)
+    .query('fields=name,due,labels,desc,url,idList&key=' + key + '&token=' + request.session.accessToken)
     .then( (response1) => {
 
       var cards = response1.body;
@@ -83,13 +83,25 @@ var loadHome = (request, response, day) => {
 
     });
 
+  var listsPromise = agent
+    .get('https://api.trello.com/1/boards/' + request.session.boardId + '/lists')
+    .query('fields=name&key=' + key + '&token=' + request.session.accessToken)
+    .then( (response1) => {
+
+      var lists = response1.body;
+
+      return lists;
+
+    });
+
   Promise
-    .all([ boardPromise, cardsPromise ])
+    .all([ boardPromise, cardsPromise, listsPromise ])
     .then(
       (values) => {
 
         var board = values[0];
         var cards = values[1];
+        var lists = values[2];
 
         // Add a root 'done' property to the card, based on whether the card has a label of 'Done'
         cards = cards.map( (card) => {
@@ -124,6 +136,17 @@ var loadHome = (request, response, day) => {
           // Substitute the array of separated lines for the original description string
           card.description = lines;
           delete card.desc;
+
+          return card;
+
+        });
+
+        // turn cards idList into list names
+        cards = cards.map( (card) => {
+
+          var list = _.find(lists, (_) => { return _.id === card.idList; });
+
+          card.list = list.name;
 
           return card;
 

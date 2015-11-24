@@ -11,10 +11,12 @@
         <paper-card {{#if done}}class="done"{{/if}}>
 
           <div class='card-content'>
+            <div {{#if done}} style="color: grey"{{/if}}>{{list}}</div>
             <div {{#if done}} style="color: grey"{{/if}}><a href={{url}} target="_blank">{{name}}</a></div>
             {{#each description}}
-            <div>{{this}}</div>
+              <div>{{this}}</div>
             {{/each}}
+
           </div>
 
           <div class='card-actions'>
