@@ -229,17 +229,67 @@ var cardDone = (request, response) => {
     .all([ labelPromise, bottomPromise ])
     .then( () => {
 
-      console.log('Done');
       response.redirect('/');
 
     })
     .catch( (error) => {
 
-      console.log(error);
-      throw error;
+      if (error.response.text == 'that label is already on the card') {
+
+        cardRemoveDone(request, response);
+
+      } else {
+
+        console.log(error.response.text);
+        response.render('error.hbs', { error: error.response.text });
+
+      }
 
     });
+};
 
+var cardRemoveDone = (request, response) => {
+
+  var cardId = request.params.id;
+
+  var labelsPromise = agent
+    .get('https://api.trello.com/1/cards/' + cardId + '/labels')
+    .query('key=' + key + '&token=' + request.session.accessToken)
+    .then( response1 => {
+
+      var labels = response1.body;
+
+      var doneLabel = _.find(labels,  _ => { return _.name === 'Done'; });
+
+      var removeLabelPromise = agent
+        .del('https://api.trello.com/1/cards/' + cardId + '/idLabels/' + doneLabel.id)
+        .query('key=' + key + '&token=' + request.session.accessToken)
+        .end( (error, response2) => {
+          console.dir(error);
+        });
+
+      var topPromise = agent
+        .put('https://api.trello.com/1/cards/' + cardId + '/pos')
+        .query('key=' + key + '&token=' + request.session.accessToken)
+        .send({ value: 'top' })
+        .end( (error, response2) => {
+          console.dir(error);
+        });
+
+      Promise
+        .all([ removeLabelPromise, topPromise ])
+        .then( () => {
+
+          response.redirect('/');
+
+        })
+        .catch( error => {
+
+          console.dir(error);
+
+        });
+
+    });
 };
 
 var chooseBoard = (request, response) => {
