@@ -19,8 +19,5 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#~1.2.1",
-    "iron-elements": "PolymerElements/iron-elements#~1.0.4",
-    "paper-elements": "PolymerElements/paper-elements#~1.0.5"
   }
 }

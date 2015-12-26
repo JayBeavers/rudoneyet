@@ -3,24 +3,22 @@
   {{> head}}
   <body unresolved>
 
-    <div id="cards" class="layout vertical">
+    <div class="rootContainer">
+      
+      <div class="headerContainer">
+        <h1>Choose a board</h1>
+      </div>
 
-      <h1>Choose a board</h1>
+      <div class="documentContainer">
 
-      {{#each boards}}
-        <paper-card>
-
-          <div class='card-content'>
-            {{name}}
+        {{#each boards}}
+          <div class="section">
+            <h3>{{name}}</h3>
+            <a href="/chooseBoard/{{id}}" class="button">select</a>
           </div>
+        {{/each}}
 
-          <div class='card-actions'>
-            <a href="/chooseBoard/{{id}}"><paper-button class="green ripple">select</paper-button></a>
-          </div>
-
-        </paper-card>
-      {{/each}}
-
+      </div>
     </div>
 
   </body>

@@ -3,41 +3,41 @@
   {{> head}}
   <body unresolved>
 
-    <div id="cards" class="layout vertical">
+    <div class="documentContainer">
 
       <h1>{{board.name}}</h1>
 
       {{#each cards}}
-        <paper-card {{#if done}}class="done"{{/if}}>
+        <div {{#if done}}class="done section"{{else}}class="section"{{/if}}>
 
-          <div class='card-content'>
-            <div {{#if done}} style="color: grey"{{/if}}>{{list}}</div>
-            <div {{#if done}} style="color: grey"{{/if}}><a href={{url}} target="_blank">{{name}}</a></div>
+          <div>
+            <div>{{list}}</div>
+            <div><a href={{url}} target="_blank">{{name}}</a></div>
             {{#each description}}
               <div>{{this}}</div>
             {{/each}}
 
           </div>
 
-          <div class='card-actions'>
-            <a href="/cardDone/{{id}}"><paper-checkbox class="blue" {{#if done}}checked{{/if}}>Done</paper-checkbox></a>
+          <div>
+            <a href="/cardDone/{{id}}"><input type="checkbox"{{#if done}} checked{{/if}}>Done</a>
             {{#unless done}}
             {{#if activityUrl}}
-            <a href={{activityUrl}} target="_blank"><paper-button class="green ripple">Activity</paper-button></a>
+            <a href={{activityUrl}} target="_blank" class="button">Activity</a>
             {{/if}}
             {{/unless}}
           </div>
 
-        </paper-card>
+        </div>
       {{/each}}
 
       <p></p>
 
       <div>
         {{today}}
-        <a href="/day/{{previousDay}}"><paper-button class="green ripple">Previous Day</paper-button></a>
-        <a href="/day/{{nextDay}}"><paper-button class="green ripple">Next Day</paper-button></a>
-        <a href="/choose"><paper-button class="red ripple">Change board</paper-button></a>
+        <a href="/day/{{previousDay}}" class="button">Previous Day</a>
+        <a href="/day/{{nextDay}}" class="button">Next Day</a>
+        <a href="/choose" class="button">Change board</a>
       </div>
 
     </div>
