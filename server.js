@@ -5,6 +5,8 @@ require('babel-core/register');
 
 var debugService = require('debug');
 debugService.enable('server');
+debugService.enable('app');
+debugService.enable('home');
 
 var debug = require('debug')('server');
 

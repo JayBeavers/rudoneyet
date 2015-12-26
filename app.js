@@ -1,6 +1,8 @@
 import home from './routes/home.js';
 import oauth from './routes/oauth.js';
 
+var debug = require('debug')('app');
+
 var express = require('express');
 var logger = require('morgan');
 var util = require('util');
@@ -39,6 +41,7 @@ app.use( (req, res, next) => {
 
 /// error handlers
 app.use( (err, req, res, next) => {
+  debug(util.inspect(err));
   res.send(util.inspect(err));
 });
 

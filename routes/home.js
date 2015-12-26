@@ -1,3 +1,5 @@
+var debug = require('debug')('home');
+
 var util = require('util');
 var moment = require('moment');
 var _ = require('underscore');
@@ -21,7 +23,7 @@ var home = (request, response) => {
 
   } else {
 
-    console.log('loading home');
+    debug('loading home');
 
     loadHome(request, response, moment());
 
@@ -43,7 +45,7 @@ var homeWithDay = (request, response) => {
 
   } else {
 
-    console.log('loading home');
+    debug('loading home');
 
     loadHome(request, response, moment(day));
 
@@ -141,19 +143,40 @@ var loadHome = (request, response, day) => {
 
         });
 
-        // turn cards idList into list names
+        lists = lists.map( (list, index) => {
+
+          list.index = index;
+
+          return list;
+
+        });
+
+        console.dir(lists);
+
+        // turn card's idList into list name and listIndex
         cards = cards.map( (card) => {
 
           var list = _.find(lists, (_) => { return _.id === card.idList; });
 
           card.list = list.name;
+          card.listIndex = list.index;
 
           return card;
 
         });
 
-        // Sort cards, putting the done cards at the end of the list
-        cards = cards.sort( (card) => { if (card.done) return 1; else return 0; });
+        console.dir(cards);
+
+        var undoneCards = cards.filter( (_) => { return !_.done; });
+        var doneCards = cards.filter( (_) => { return _.done; });
+
+        // Sort cards by inverted list index, putting the done cards at the end of the list
+        undoneCards = undoneCards.sort( (a, b) => { return a.listIndex - b.listIndex; });
+        doneCards = doneCards.sort( (a, b) => { return a.listIndex - b.listIndex; });
+
+        cards = undoneCards.concat(doneCards);
+
+        console.dir(cards);
 
         response.render('home.hbs', {
           board: board,
@@ -172,7 +195,7 @@ var loadHome = (request, response, day) => {
 
         } else {
 
-          console.log(error.message);
+          debug(error.message);
           throw error;
 
         }
@@ -202,7 +225,7 @@ var cards = (request, response) => {
     })
     .catch ( (error) => {
 
-      console.log(error);
+      debug(error);
       throw error;
 
     });
@@ -240,7 +263,7 @@ var cardDone = (request, response) => {
 
       } else {
 
-        console.log(error.response.text);
+        debug(error.response.text);
         response.render('error.hbs', { error: error.response.text });
 
       }
@@ -265,7 +288,7 @@ var cardRemoveDone = (request, response) => {
         .del('https://api.trello.com/1/cards/' + cardId + '/idLabels/' + doneLabel.id)
         .query('key=' + key + '&token=' + request.session.accessToken)
         .end( (error, response2) => {
-          console.dir(error);
+          debug(error);
         });
 
       var topPromise = agent
@@ -273,7 +296,7 @@ var cardRemoveDone = (request, response) => {
         .query('key=' + key + '&token=' + request.session.accessToken)
         .send({ value: 'top' })
         .end( (error, response2) => {
-          console.dir(error);
+          debug(error);
         });
 
       Promise
@@ -285,7 +308,7 @@ var cardRemoveDone = (request, response) => {
         })
         .catch( error => {
 
-          console.dir(error);
+          debug(error);
 
         });
 
@@ -303,7 +326,7 @@ var chooseBoard = (request, response) => {
 
 var choose = (request, response) => {
 
-  console.log('choosing board');
+  debug('choosing board');
 
   agent
     .get('https://api.trello.com/1/members/me/boards')
@@ -316,7 +339,7 @@ var choose = (request, response) => {
     })
     .catch ( (error) => {
 
-      console.log(error);
+      debug('Error: ' + error);
       throw error;
 
     });
