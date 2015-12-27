@@ -3,29 +3,46 @@
   {{> head}}
   <body unresolved>
 
-    <div class="documentContainer">
+    <div class="rootContainer">
 
-      <h1>{{board.name}}</h1>
+      <div class="headerContainer">
+        <h1>{{board.name}}</h1>
+      </div>
 
       {{#each cards}}
-        <div {{#if done}}class="done section"{{else}}class="section"{{/if}}>
+        <div class="card{{#if done}} done{{/if}}">
 
           <div>
-            <div>{{list}}</div>
+            <h3>{{list}}</h3>
             <div><a href={{url}} target="_blank">{{name}}</a></div>
             {{#each description}}
               <div>{{this}}</div>
             {{/each}}
-
           </div>
 
-          <div>
-            <a href="/cardDone/{{id}}"><input type="checkbox"{{#if done}} checked{{/if}}>Done</a>
-            {{#unless done}}
+          <div class="cardActions">
+
+            <a href="/cardDone/{{id}}" class="actionsItem">
+              <div style="display: flex; flex-direction: row; justify-content: center; align-items: center;">
+                <div class="outer">
+                  <div class="inner{{#if done}} dark{{/if}}"/></div>
+                </div>
+                <div>done</div>
+              </div>
+            </a>
+
+            <div class="actionsFiller"></div>
+
+            {{#if done}}
+            <div style="flex-basis: 15%;"></div>
+            {{else}}
             {{#if activityUrl}}
-            <a href={{activityUrl}} target="_blank" class="button">Activity</a>
+            <a href={{activityUrl}} target="_blank" class="button actionsItem">Activity</a>
+            {{else}}
+            <div style="flex-basis: 15%;"></div>
             {{/if}}
-            {{/unless}}
+            {{/if}}
+
           </div>
 
         </div>

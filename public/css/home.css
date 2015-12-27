@@ -27,13 +27,19 @@ body {
   width: 80%;
 }
 
-.detailsContainer {
+.board {
+  width: 80%;
+  margin: 10px 10% 10px 10%;
+  background-color: #c0dfd9;
+  border: 2px solid;
+  border-radius: 25px;
+  padding: 10px;
   display: flex;
   flex-direction: row;
-  width: 100%;
+  justify-content: space-between;
 }
 
-.section {
+.card {
   width: 80%;
   margin: 10px 10% 10px 10%;
   background-color: #c0dfd9;
@@ -42,38 +48,46 @@ body {
   padding: 10px;
 }
 
+.cardActions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  height: 50px;
+}
+
 .done {
   background-color: #b3c2bf;
 }
 
-.detailsItem {
-  flex-grow: 1;
-}
-
-.fourItems {
-  flex: 1 1 25%;
+.actionsItem {
   margin: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.fourItems img {
-  max-width: 80%;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.circle {
-  text-align: center;
-  vertical-align: middle;
-  line-height: 50px;
-	border-radius: 50%;
-	width: 50px;
-	height: 50px;
+  border-radius:6px;
+  font-size: 20px;
+  text-decoration: none;
+  cursor: pointer;
+  border: none;
+  padding: 10px;
   color: #b3c2bf;
   background-color: #3b3a36;
+  flex-basis: 15%;
+}
+
+.button {
+  margin: 10px;
+  border-radius:6px;
+  font-size: 20px;
+  text-decoration: none;
+  cursor: pointer;
+  border:none;
+  padding: 10px;
+  color: #b3c2bf;
+  background-color: #3b3a36;
+  flex-basis: 15%;
+}
+
+.actionsFiller {
+  flex-basis: 70%;
 }
 
 .section a:visited {
@@ -100,26 +114,32 @@ a.button:hover {
   color: #c0dfd9;
 }
 
-.video {
-  margin: 10px;
-}
-
-.button {
-  margin: 10px;
-  border-radius:6px;
-  font-size: 20px;
-  text-decoration: none;
-  cursor: pointer;
-  border:none;
-  padding: 10px;
-  color: white;
-  background-color: #3b3a36;
-}
-
 .justified {
   text-align: center;
 }
 
 a {
   text-decoration: none;
+}
+
+.outer {
+    width: 20px;
+    height: 20px;
+    margin: 3px;
+    border-radius: 50%;
+    background: #c0dfd9;
+}
+
+.inner {
+    width: 50%;
+    height: 50%;
+    background: c0dfd9;
+    border-radius: 50%;
+    position: relative;
+    top: 25%;
+    left: 25%;
+}
+
+.dark {
+  background-color: #3b3a36;
 }
