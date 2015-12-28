@@ -24,7 +24,7 @@ var login = (request, response) => {
   oauth.getOAuthRequestToken(function (error, token, tokenSecret, results) {
 
     if (error) {
-      debug('Error calling getOAuthRequestToken: ' + error);
+      debug('Error calling getOAuthRequestToken: ' + require('util').inspect(error));
       response.status(500).send(error);
       return;
     }
