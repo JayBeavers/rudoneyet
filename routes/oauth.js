@@ -1,3 +1,5 @@
+var debug = require('debug')('oauth');
+
 var router = require('express').Router();
 
 var key = process.env.TRELLO_KEY;
@@ -16,11 +18,13 @@ var oauth;
 var login = (request, response) => {
 
   loginCallback = 'http://' + request.headers.host + '/callback';
+  debug('Callback: ' + loginCallback);
   oauth = new OAuth(requestUrl, accessUrl, key, secret, "1.0", loginCallback, "HMAC-SHA1");
 
   oauth.getOAuthRequestToken(function (error, token, tokenSecret, results) {
 
     if (error) {
+      debug('Error calling getOAuthRequestToken: ' + error);
       response.status(500).send(error);
       return;
     }
