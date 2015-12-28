@@ -19,6 +19,9 @@ var login = (request, response) => {
 
   loginCallback = 'http://' + request.headers.host + '/callback';
   debug('Callback: ' + loginCallback);
+  debug('key: ' + key);
+  debug('secret: ' + secret);
+
   oauth = new OAuth(requestUrl, accessUrl, key, secret, "1.0", loginCallback, "HMAC-SHA1");
 
   oauth.getOAuthRequestToken(function (error, token, tokenSecret, results) {
