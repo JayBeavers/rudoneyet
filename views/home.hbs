@@ -13,36 +13,39 @@
         <div class="card{{#if done}} done{{/if}}">
 
           <div>
-            <h3>{{list}}</h3>
+            <div class="cardHeader">
+              <div class="cardTitle">{{list}}</div>
+
+              <div class="actionsFiller"></div>
+
+              {{#if done}}
+              <div class="actionsItem"></div>
+              {{else}}
+              {{#if activityUrl}}
+              <a href={{activityUrl}} target="_blank" class="button actionsItem">
+                <div style="display: flex; flex-direction: row; justify-content: center; align-items: center;">
+                  Activity
+                </div>
+              </a>
+              {{else}}
+              <div class="actionsItem"></div>
+              {{/if}}
+              {{/if}}
+
+              <a href="/cardDone/{{id}}" class="button actionsItem">
+                <div style="display: flex; flex-direction: row; justify-content: center; align-items: center;">
+                  <div class="outer">
+                    <div class="inner{{#if done}} dark{{/if}}"/></div>
+                  </div>
+                  <div>done</div>
+                </div>
+              </a>
+
+            </div>
             <div><a href={{url}} target="_blank">{{name}}</a></div>
             {{#each description}}
               <div>{{this}}</div>
             {{/each}}
-          </div>
-
-          <div class="cardActions">
-
-            <a href="/cardDone/{{id}}" class="actionsItem">
-              <div style="display: flex; flex-direction: row; justify-content: center; align-items: center;">
-                <div class="outer">
-                  <div class="inner{{#if done}} dark{{/if}}"/></div>
-                </div>
-                <div>done</div>
-              </div>
-            </a>
-
-            <div class="actionsFiller"></div>
-
-            {{#if done}}
-            <div style="flex-basis: 15%;"></div>
-            {{else}}
-            {{#if activityUrl}}
-            <a href={{activityUrl}} target="_blank" class="button actionsItem">Activity</a>
-            {{else}}
-            <div style="flex-basis: 15%;"></div>
-            {{/if}}
-            {{/if}}
-
           </div>
 
         </div>

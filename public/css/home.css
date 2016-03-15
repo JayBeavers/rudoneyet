@@ -48,12 +48,26 @@ body {
   padding: 10px;
 }
 
+.cardTitle {
+  font-size: 125%;
+  font-weight: bold;
+  flex-basis: 50%;
+}
+
 .cardActions {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-  height: 50px;
+  height: 35px;
+}
+
+.cardHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 35px;
 }
 
 .done {
@@ -62,32 +76,24 @@ body {
 
 .actionsItem {
   margin: 10px;
-  border-radius:6px;
-  font-size: 20px;
-  text-decoration: none;
-  cursor: pointer;
-  border: none;
-  padding: 10px;
-  color: #b3c2bf;
-  background-color: #3b3a36;
+  padding: 5px;
   flex-basis: 15%;
+  justify-content: center;
+  align-items: center;
 }
 
 .button {
-  margin: 10px;
   border-radius:6px;
   font-size: 20px;
   text-decoration: none;
   cursor: pointer;
   border:none;
-  padding: 10px;
   color: #b3c2bf;
   background-color: #3b3a36;
-  flex-basis: 15%;
 }
 
 .actionsFiller {
-  flex-basis: 70%;
+  flex-basis: 20%;
 }
 
 .section a:visited {
